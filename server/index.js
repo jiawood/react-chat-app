@@ -5,11 +5,11 @@ const http = require('http')
 const router =  require('./router')
 const {addUser, removeUser, getUser, getUserInRoom} = require( './users')
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5001
 
 const app = express()
-const serser = http.createServer(app)
-const io = socketio(serser)
+const server = http.createServer(app)
+const io = socketio(server)
 
 app.use(router)
 
@@ -25,7 +25,7 @@ io.on('connect',(socket) => {
     //把相关信息emit出去，方便client端接收
     socket.emit('message', {user: 'admin',text: `${user.name},welcome to room ${user.room}`})
     //把信息除了自己其他的所有人都接收
-    socket.broadcast.to(user.room).emit('massage',{user:'admin',text:`${user.name} has joined`})
+    socket.broadcast.to(user.room).emit('message',{user:'admin',text:`${user.name} has joined`})
 
     io.to(user.room).emit('roomData', {room:user.room,users:getUserInRoom(user.room)})
 
