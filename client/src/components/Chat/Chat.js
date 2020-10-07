@@ -18,7 +18,7 @@ const Chat = ({ location }) => {
   const [users, setUsers] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const ENDPOINT = 'http://localhost:5000/'; //sokect.io运行的地址
+  const ENDPOINT = 'http://localhost:5001/'; //sokect.io运行的地址
   // const ENDPOINT = 'https://project-chat-application.herokuapp.com/';
 
   useEffect(() => {
