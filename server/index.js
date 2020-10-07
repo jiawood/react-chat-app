@@ -1,9 +1,10 @@
 const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
+const cors = require('cors')
 
 const router =  require('./router')
-const {addUser, removeUser, getUser, getUserInRoom} = require( './users')
+const {addUser, removeUser, getUser, getUsersInRoom} = require( './users')
 
 const PORT = process.env.PORT || 5001
 
@@ -12,6 +13,7 @@ const server = http.createServer(app)
 const io = socketio(server)
 
 app.use(router)
+app.use(cors())
 
 //在socket.io连接的时候，里面socket接收(on)一些自定义事件或者预定义好的事件时，所做的操作
 io.on('connect',(socket) => {
@@ -27,7 +29,7 @@ io.on('connect',(socket) => {
     //把信息除了自己其他的所有人都接收
     socket.broadcast.to(user.room).emit('message',{user:'admin',text:`${user.name} has joined`})
 
-    io.to(user.room).emit('roomData', {room:user.room,users:getUserInRoom(user.room)})
+    io.to(user.room).emit('roomData', {room:user.room,users:getUsersInRoom(user.room)})
 
     callback()
   })
@@ -45,7 +47,7 @@ io.on('connect',(socket) => {
     if(user){
       io.to(user.room).emit('message',{user: 'Admin',text:`${user.name} has left`})
       //有人离开之后，房间里的个人信息也变化了
-      io.to(user.room).emit('roomData',{room:user.room,user:getUserInRoom(user.room)})
+      io.to(user.room).emit('roomData',{room:user.room,user:getUsersInRoom(user.room)})
     }
   })
 })
